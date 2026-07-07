@@ -353,13 +353,15 @@ section{scroll-margin-top:84px}
 /* Los logos se cargan automáticamente desde logos/<slug>.(png|svg|jpg|webp).
    Si el archivo no existe, se muestran las iniciales del cliente. */
 .client-logo{
-  width:56px;height:56px;border-radius:14px;margin:0 auto 12px;
-  display:grid;place-items:center;font-weight:800;font-size:1.05rem;letter-spacing:.02em;
+  width:100%;height:66px;border-radius:12px;margin:0 auto 14px;
+  display:grid;place-items:center;font-weight:800;font-size:1.15rem;letter-spacing:.02em;
   background:linear-gradient(135deg,var(--teal-soft),color-mix(in srgb,var(--lime) 15%,var(--teal-soft)));
   color:var(--teal-deep);overflow:hidden;
 }
 .client-logo.has-img{background:#fff}
-.client-logo img{width:100%;height:100%;object-fit:contain;padding:6px;box-sizing:border-box}
+/* Los logos reales suelen ser horizontales (wordmarks): se escalan al ancho de la
+   tarjeta con un tope de alto, para que se lean bien sin deformarse. */
+.client-logo img{max-width:86%;max-height:46px;width:auto;height:auto;object-fit:contain}
 .client b{display:block;font-size:.8rem;line-height:1.3;min-height:2.1em}
 .client span{font-size:.73rem;color:var(--muted)}
 
