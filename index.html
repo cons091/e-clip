@@ -418,19 +418,6 @@ section{scroll-margin-top:84px}
 .form-msg.ok{background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal-deep)}
 .form-msg.fail{background:rgba(194,69,58,.12);color:#C2453A}
 
-/* ============ FOOTER ============ */
-.footer{background:var(--petrol);color:var(--on-petrol-muted);padding:44px 0 36px}
-.footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
-.footer .brand-text{color:var(--on-petrol)}
-.footer-links{display:flex;gap:20px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
-.footer-links a{text-decoration:none;font-size:.88rem}
-.footer-links a:hover{color:var(--lime)}
-.footer-bottom{
-  border-top:1px solid rgba(233,242,238,.12);margin-top:30px;padding-top:22px;
-  display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:.83rem;
-}
-.footer-bottom a{color:var(--lime);text-decoration:none;font-weight:600}
-
 /* ============ REVEAL ANIMATIONS ============ */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
@@ -928,31 +915,6 @@ section{scroll-margin-top:84px}
   </div>
 </section>
 
-<!-- ================= FOOTER ================= -->
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer-inner">
-      <a class="brand" href="#inicio" aria-label="e-clip, ir al inicio">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#0C2321" stroke-width="2.4"/><circle cx="12" cy="12" r="3" fill="#0C2321"/></svg>
-          <img src="assets/e-clip-icon.png" alt="" onerror="this.remove()">
-        </span>
-        <span class="brand-text">e-clip<small>.cloud</small></span>
-      </a>
-      <ul class="footer-links">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#nosotros">Nosotros</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-      </ul>
-    </div>
-    <div class="footer-bottom">
-      <span>© <span id="year">2026</span> e-clip. Todos los derechos reservados.</span>
-      <span>Desarrollado por <a href="#" onclick="return false">Proyecto Órbita</a></span>
-    </div>
-  </div>
-</footer>
-
 <script>
 (function(){
   "use strict";
@@ -1134,9 +1096,6 @@ section{scroll-margin-top:84px}
       msgOk.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"});
     }, 700);
   });
-
-  /* ---------- Año dinámico en footer ---------- */
-  document.getElementById("year").textContent = new Date().getFullYear();
 })();
 </script>
 </body>
