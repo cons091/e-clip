@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>e-clip — Monitoreo y Análisis de Prensa</title>
+<meta name="description" content="Monitoreo y análisis de prensa acorde a tus necesidades. Información estratégica para la toma de decisiones. El periodismo al alcance de tu empresa.">
+<meta property="og:title" content="e-clip — Monitoreo y Análisis de Prensa">
+<meta property="og:description" content="Una nueva Visión en captura y análisis de prensa.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/e-clip-icon.png">
+<link rel="apple-touch-icon" href="assets/e-clip-icon.png">
+</head>
+<body>
+
+<style>
+/* ============================================================
+   e-clip.cloud — rediseño mockup
+   Tokens de diseño (equivalentes a config de Tailwind)
+   ============================================================ */
+:root{
+  --bg:#F5F7F6;
+  --surface:#FFFFFF;
+  --surface-2:#EDF2EF;
+  --ink:#14231F;
+  --muted:#55685F;
+  --line:#DCE5E0;
+
+  --teal:#0E8C7F;
+  --teal-deep:#0A5C55;
+  --teal-soft:#DDF0ED;
+  --lime:#CDD62B;
+  --lime-ink:#75800F;
+
+  --petrol:#0C2321;
+  --petrol-2:#10302C;
+  --on-petrol:#E9F2EE;
+  --on-petrol-muted:#9DB8AF;
+
+  --shadow:0 1px 2px rgba(12,35,33,.06),0 8px 24px rgba(12,35,33,.08);
+  --shadow-lg:0 2px 4px rgba(12,35,33,.08),0 20px 48px rgba(12,35,33,.14);
+  --radius:14px;
+
+  --sans:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0B1715;
+    --surface:#122320;
+    --surface-2:#162B27;
+    --ink:#E7F1EC;
+    --muted:#93A8A0;
+    --line:#22383380;
+
+    --teal:#2FB8A6;
+    --teal-deep:#5ED2C2;
+    --teal-soft:#123430;
+    --lime:#D6DE3F;
+    --lime-ink:#DCE27A;
+
+    --petrol:#081512;
+    --petrol-2:#0E211E;
+
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg:0 2px 4px rgba(0,0,0,.35),0 20px 48px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F5F7F6; --surface:#FFFFFF; --surface-2:#EDF2EF; --ink:#14231F; --muted:#55685F;
+  --line:#DCE5E0; --teal:#0E8C7F; --teal-deep:#0A5C55; --teal-soft:#DDF0ED;
+  --lime:#CDD62B; --lime-ink:#75800F; --petrol:#0C2321; --petrol-2:#10302C;
+  --shadow:0 1px 2px rgba(12,35,33,.06),0 8px 24px rgba(12,35,33,.08);
+  --shadow-lg:0 2px 4px rgba(12,35,33,.08),0 20px 48px rgba(12,35,33,.14);
+}
+:root[data-theme="dark"]{
+  --bg:#0B1715; --surface:#122320; --surface-2:#162B27; --ink:#E7F1EC; --muted:#93A8A0;
+  --line:#22383380; --teal:#2FB8A6; --teal-deep:#5ED2C2; --teal-soft:#123430;
+  --lime:#D6DE3F; --lime-ink:#DCE27A; --petrol:#081512; --petrol-2:#0E211E;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg:0 2px 4px rgba(0,0,0,.35),0 20px 48px rgba(0,0,0,.5);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+img,svg{max-width:100%;display:block}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+section{scroll-margin-top:84px}
+
+/* etiqueta / eyebrow */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:14px;
+}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--lime);border-radius:2px}
+
+.section-title{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:750;letter-spacing:-.01em}
+.section-lead{color:var(--muted);max-width:62ch;margin-top:14px;font-size:1.05rem}
+
+/* ============ NAVBAR ============ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:50;
+  transition:background .3s,box-shadow .3s,border-color .3s;
+  border-bottom:1px solid transparent;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+.nav.scrolled{
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom-color:var(--line);
+}
+.nav .brand-text,.nav .nav-links a,.nav .burger{color:var(--on-petrol)}
+.nav.scrolled .brand-text,.nav.scrolled .nav-links a,.nav.scrolled .burger{color:var(--ink)}
+
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;flex:none;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--teal) 0%,var(--lime) 130%);
+  display:grid;place-items:center;
+}
+.brand-mark svg{width:20px;height:20px}
+.brand-mark img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.brand-text{font-weight:800;font-size:1.2rem;letter-spacing:-.02em}
+.brand-text small{font-weight:500;opacity:.55;font-size:.78em}
+
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none;margin:0;padding:0}
+.nav-links a{
+  text-decoration:none;font-weight:600;font-size:.93rem;
+  padding:8px 14px;border-radius:99px;transition:background .2s,color .2s;
+}
+.nav-links a:hover{background:color-mix(in srgb,var(--teal) 14%,transparent)}
+.nav-cta{
+  background:var(--lime)!important;color:#1B2606!important;
+  margin-left:8px;box-shadow:0 2px 10px rgba(205,214,43,.35);
+}
+.nav-cta:hover{filter:brightness(1.05)}
+
+.burger{display:none;background:none;border:0;padding:8px;border-radius:8px}
+.burger svg{width:26px;height:26px}
+
+.mobile-menu{
+  display:none;position:fixed;top:68px;left:0;right:0;z-index:49;
+  background:var(--surface);border-bottom:1px solid var(--line);
+  box-shadow:var(--shadow-lg);padding:10px 24px 18px;
+}
+.mobile-menu.open{display:block}
+.mobile-menu a{
+  display:block;text-decoration:none;font-weight:600;
+  padding:13px 6px;border-bottom:1px solid var(--line);
+}
+.mobile-menu a:last-child{border-bottom:0;color:var(--teal)}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;background:var(--petrol);color:var(--on-petrol);
+  padding:150px 0 110px;overflow:hidden;
+}
+.hero::before{ /* resplandor teal */
+  content:"";position:absolute;width:720px;height:720px;border-radius:50%;
+  background:radial-gradient(circle,rgba(14,140,127,.35),transparent 65%);
+  top:-260px;right:-160px;pointer-events:none;
+}
+.hero::after{ /* resplandor lima */
+  content:"";position:absolute;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(205,214,43,.14),transparent 65%);
+  bottom:-240px;left:-140px;pointer-events:none;
+}
+.hero-grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  gap:56px;align-items:center;
+}
+.hero h1{font-size:clamp(2.3rem,5vw,3.7rem);font-weight:800;letter-spacing:-.025em}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--lime)}
+.hero-sub{color:var(--on-petrol-muted);margin-top:22px;max-width:56ch;font-size:1.08rem}
+.hero-sub strong{color:var(--on-petrol);font-weight:600}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font-weight:700;font-size:.98rem;padding:14px 26px;border-radius:99px;
+  border:0;transition:transform .15s,box-shadow .2s,filter .2s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:18px;height:18px}
+.btn-primary{background:var(--lime);color:#1B2606;box-shadow:0 6px 22px rgba(205,214,43,.4)}
+.btn-ghost{background:transparent;color:var(--on-petrol);border:1.5px solid rgba(233,242,238,.3)}
+.btn-ghost:hover{border-color:rgba(233,242,238,.6)}
+.hero-note{
+  display:flex;align-items:center;gap:10px;margin-top:30px;
+  color:var(--on-petrol-muted);font-size:.88rem;
+}
+.hero-note .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex:none;
+  animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(205,214,43,.5)}50%{box-shadow:0 0 0 7px rgba(205,214,43,0)}}
+
+/* mock del informe en el hero */
+.hero-visual{position:relative;min-height:420px}
+.report-card{
+  position:absolute;background:var(--surface);color:var(--ink);
+  border-radius:16px;box-shadow:var(--shadow-lg);padding:20px 22px;width:min(360px,88%);
+  border:1px solid var(--line);
+}
+.report-card.back{top:8%;right:2%;transform:rotate(4deg) scale(.94);opacity:.55}
+.report-card.mid{top:16%;right:8%;transform:rotate(-3deg) scale(.97);opacity:.8}
+.report-card.front{top:24%;right:14%;animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.report-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.report-head .rh-icon{
+  width:34px;height:34px;border-radius:9px;background:var(--teal-soft);
+  display:grid;place-items:center;color:var(--teal);flex:none;
+}
+.report-head .rh-icon svg{width:18px;height:18px}
+.report-head b{font-size:.92rem;display:block;line-height:1.25}
+.report-head span{font-size:.75rem;color:var(--muted)}
+.report-item{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+.report-item:last-child{border-bottom:0;padding-bottom:2px}
+.tag{
+  flex:none;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:99px;margin-top:2px;
+}
+.tag-teal{background:var(--teal-soft);color:var(--teal-deep)}
+.tag-lime{background:color-mix(in srgb,var(--lime) 22%,transparent);color:var(--lime-ink)}
+.tag-grey{background:var(--surface-2);color:var(--muted)}
+.report-item p{font-size:.83rem;line-height:1.45}
+.report-item small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}
+
+/* patrón de escamas decorativo */
+.scales{position:absolute;inset:auto 0 0 0;height:120px;opacity:.35;pointer-events:none;color:var(--on-petrol)}
+
+/* ============ PILARES ============ */
+.pillars{padding:90px 0 30px}
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px}
+.pillar{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px 24px;box-shadow:var(--shadow);
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.pillar:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--teal) 40%,var(--line))}
+.pillar-icon{
+  width:50px;height:50px;border-radius:13px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--teal-soft),color-mix(in srgb,var(--lime) 18%,var(--teal-soft)));
+  color:var(--teal);margin-bottom:18px;
+}
+.pillar-icon svg{width:24px;height:24px}
+.pillar h3{font-size:1.06rem;font-weight:700;margin-bottom:8px}
+.pillar p{color:var(--muted);font-size:.92rem}
+
+/* ============ NOSOTROS ============ */
+.about{padding:90px 0}
+.about-top{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:start}
+.about-quote{
+  font-family:var(--serif);font-style:italic;font-size:1.22rem;line-height:1.6;
+  color:var(--ink);border-left:3px solid var(--lime);padding-left:22px;margin-top:8px;
+}
+.about-quote .who{
+  display:block;font-family:var(--sans);font-style:normal;font-size:.82rem;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-top:16px;
+}
+.about-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px}
+.about-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px 26px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.about-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--teal),var(--lime));
+}
+.about-card h3{font-size:1.12rem;font-weight:750;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.about-card h3 svg{width:20px;height:20px;color:var(--teal);flex:none}
+.about-card p{color:var(--muted);font-size:.93rem}
+.about-card p + p{margin-top:10px}
+
+/* ============ ESTADÍSTICAS ============ */
+.stats{background:var(--petrol);color:var(--on-petrol);padding:78px 0;position:relative;overflow:hidden}
+.stats::before{
+  content:"";position:absolute;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle,rgba(14,140,127,.3),transparent 65%);
+  top:-200px;left:-120px;pointer-events:none;
+}
+.stats-grid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.stat .num{
+  font-family:var(--display);font-size:clamp(2.4rem,4.5vw,3.4rem);font-weight:800;
+  color:var(--lime);letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+}
+.stat .num sup{font-size:.5em;font-weight:700;top:-.6em;position:relative}
+.stat .label{color:var(--on-petrol-muted);font-weight:600;font-size:.95rem;margin-top:6px}
+
+/* ============ SERVICIOS ============ */
+.services{padding:90px 0}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:44px}
+.service{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:32px 30px;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  transition:transform .25s,box-shadow .25s;
+}
+.service:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.service-head{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.service-icon{
+  width:52px;height:52px;border-radius:14px;flex:none;display:grid;place-items:center;
+  background:var(--petrol);color:var(--lime);
+}
+.service-icon svg{width:25px;height:25px}
+.service h3{font-size:1.2rem;font-weight:750}
+.service > p{color:var(--muted);font-size:.95rem;flex:1}
+.detail-btn{
+  align-self:flex-start;margin-top:20px;background:none;border:1.5px solid var(--teal);
+  color:var(--teal);font-weight:700;font-size:.88rem;padding:9px 20px;border-radius:99px;
+  display:inline-flex;align-items:center;gap:7px;transition:background .2s,color .2s;
+}
+.detail-btn:hover{background:var(--teal);color:#fff}
+.detail-btn svg{width:15px;height:15px;transition:transform .25s}
+.detail-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.service-detail{
+  max-height:0;overflow:hidden;transition:max-height .35s ease;
+}
+.service-detail-inner{
+  margin-top:18px;padding:16px 18px;background:var(--surface-2);
+  border-radius:10px;font-size:.88rem;color:var(--muted);
+}
+.service-detail-inner ul{margin:0;padding-left:18px}
+.service-detail-inner li{margin:4px 0}
+
+/* ============ CLIENTES ============ */
+.clients{padding:90px 0;background:var(--surface-2)}
+.marquee{
+  overflow:hidden;margin-top:44px;position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+.marquee-track{
+  display:flex;gap:18px;width:max-content;
+  animation:marquee 60s linear infinite;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.client{
+  flex:none;width:210px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px 18px;text-align:center;box-shadow:var(--shadow);
+}
+/* Los logos se cargan automáticamente desde logos/<slug>.(png|svg|jpg|webp).
+   Si el archivo no existe, se muestran las iniciales del cliente. */
+.client-logo{
+  width:56px;height:56px;border-radius:14px;margin:0 auto 12px;
+  display:grid;place-items:center;font-weight:800;font-size:1.05rem;letter-spacing:.02em;
+  background:linear-gradient(135deg,var(--teal-soft),color-mix(in srgb,var(--lime) 15%,var(--teal-soft)));
+  color:var(--teal-deep);overflow:hidden;
+}
+.client-logo.has-img{background:#fff}
+.client-logo img{width:100%;height:100%;object-fit:contain;padding:6px;box-sizing:border-box}
+.client b{display:block;font-size:.8rem;line-height:1.3;min-height:2.1em}
+.client span{font-size:.73rem;color:var(--muted)}
+
+/* ============ CONTACTO ============ */
+.contact{padding:90px 0}
+.contact-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:56px;margin-top:44px;align-items:start}
+.contact-info-card{
+  background:var(--petrol);color:var(--on-petrol);border-radius:var(--radius);
+  padding:36px 32px;position:relative;overflow:hidden;
+}
+.contact-info-card::after{
+  content:"";position:absolute;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(205,214,43,.16),transparent 65%);
+  bottom:-120px;right:-100px;
+}
+.contact-info-card h3{font-size:1.3rem;margin-bottom:10px}
+.contact-info-card > p{color:var(--on-petrol-muted);font-size:.94rem}
+.contact-row{display:flex;align-items:center;gap:14px;margin-top:24px;position:relative;z-index:1}
+.contact-row a{color:var(--on-petrol);text-decoration:none;font-weight:600}
+.contact-row a:hover{color:var(--lime)}
+.contact-row small{display:block;color:var(--on-petrol-muted);font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.ci-icon{
+  width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;
+  background:rgba(233,242,238,.08);color:var(--lime);
+}
+.ci-icon svg{width:20px;height:20px}
+
+.form{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:36px 32px;box-shadow:var(--shadow);
+}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:.86rem;margin-bottom:7px}
+.field label i{color:var(--teal);font-style:normal}
+.field input,.field textarea,.field select{
+  width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:.94rem;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:var(--teal);box-shadow:0 0 0 3px color-mix(in srgb,var(--teal) 18%,transparent);
+}
+.field textarea{resize:vertical;min-height:120px}
+.phone-group{display:flex;gap:10px}
+.phone-group select{width:118px;flex:none}
+.field .err{display:none;color:#C2453A;font-size:.78rem;margin-top:5px;font-weight:600}
+.field.invalid input,.field.invalid textarea{border-color:#C2453A}
+.field.invalid .err{display:block}
+.form-msg{
+  display:none;padding:14px 18px;border-radius:10px;font-weight:600;font-size:.92rem;
+  margin-bottom:18px;align-items:center;gap:10px;
+}
+.form-msg.show{display:flex}
+.form-msg svg{width:20px;height:20px;flex:none}
+.form-msg.ok{background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal-deep)}
+.form-msg.fail{background:rgba(194,69,58,.12);color:#C2453A}
+
+/* ============ FOOTER ============ */
+.footer{background:var(--petrol);color:var(--on-petrol-muted);padding:44px 0 36px}
+.footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}
+.footer .brand-text{color:var(--on-petrol)}
+.footer-links{display:flex;gap:20px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.footer-links a{text-decoration:none;font-size:.88rem}
+.footer-links a:hover{color:var(--lime)}
+.footer-bottom{
+  border-top:1px solid rgba(233,242,238,.12);margin-top:30px;padding-top:22px;
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:.83rem;
+}
+.footer-bottom a{color:var(--lime);text-decoration:none;font-weight:600}
+
+/* ============ REVEAL ANIMATIONS ============ */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal-d1{transition-delay:.1s}
+.reveal-d2{transition-delay:.2s}
+.reveal-d3{transition-delay:.3s}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .report-card.front{animation:none}
+  .hero-note .dot{animation:none}
+  .marquee-track{animation:none}
+  .marquee{overflow-x:auto;mask-image:none;-webkit-mask-image:none}
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1020px){
+  .pillars-grid{grid-template-columns:repeat(2,1fr)}
+  .about-cards{grid-template-columns:1fr;max-width:640px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:40px 20px}
+}
+@media (max-width:880px){
+  .nav-links{display:none}
+  .burger{display:block}
+  .hero{padding:130px 0 90px}
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .hero-visual{min-height:380px;max-width:440px}
+  .report-card.front{right:0}
+  .report-card.mid{right:-4%}
+  .report-card.back{right:-8%}
+  .about-top{grid-template-columns:1fr;gap:34px}
+  .contact-grid{grid-template-columns:1fr;gap:34px}
+}
+@media (max-width:600px){
+  body{font-size:16px}
+  .pillars-grid,.services-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .form,.contact-info-card{padding:28px 22px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .hero-visual{min-height:340px}
+}
+</style>
+
+<!-- ================= NAVBAR ================= -->
+<header class="nav" id="navbar">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#inicio" aria-label="e-clip, ir al inicio">
+      <span class="brand-mark" aria-hidden="true">
+        <!-- ojo de camaleón (fallback) + logo real -->
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#0C2321" stroke-width="2.4"/><circle cx="12" cy="12" r="3" fill="#0C2321"/></svg>
+        <img src="assets/e-clip-icon.png" alt="" onerror="this.remove()">
+      </span>
+      <span class="brand-text">e-clip<small>.cloud</small></span>
+    </a>
+    <nav aria-label="Navegación principal">
+      <ul class="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a class="nav-cta" href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+      <svg id="burgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#inicio">Inicio</a>
+  <a href="#nosotros">Nosotros</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Una nueva <em>Visión</em> en captura y análisis de prensa</h1>
+      <p class="hero-sub">
+        Monitoreo y análisis de prensa acorde a tus necesidades.
+        <strong>Información estratégica para la toma de decisiones.</strong>
+        El periodismo al alcance de tu empresa.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contacto">
+          Contáctanos
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#servicios">Conocer los servicios</a>
+      </div>
+      <p class="hero-note"><span class="dot" aria-hidden="true"></span> Informes de prensa diarios, elaborados por periodistas.</p>
+    </div>
+
+    <!-- Mock del producto: reemplazable por captura/imagen real -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="report-card back"></div>
+      <div class="report-card mid"></div>
+      <div class="report-card front">
+        <div class="report-head">
+          <span class="rh-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <div>
+            <b>Informe de Prensa Diario</b>
+            <span>Lunes · 07:30 hrs · 24 notas seleccionadas</span>
+          </div>
+        </div>
+        <div class="report-item">
+          <span class="tag tag-teal">Minería</span>
+          <p>Producción de cobre supera proyecciones del trimestre<small>El Mercurio de Antofagasta · Economía</small></p>
+        </div>
+        <div class="report-item">
+          <span class="tag tag-lime">Energía</span>
+          <p>Nuevo proyecto de transmisión avanza en evaluación ambiental<small>Diario Financiero · Empresas</small></p>
+        </div>
+        <div class="report-item">
+          <span class="tag tag-grey">Portuario</span>
+          <p>Puertos del norte registran alza en transferencia de carga<small>La Estrella de Iquique · Regional</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- patrón de escamas (camaleón) -->
+  <svg class="scales" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 1200 120">
+    <defs>
+      <pattern id="scalePat" width="46" height="40" patternUnits="userSpaceOnUse">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="1.4"/>
+        <circle cx="35" cy="32" r="9" fill="none" stroke="currentColor" stroke-opacity=".15" stroke-width="1.4"/>
+      </pattern>
+    </defs>
+    <rect width="1200" height="120" fill="url(#scalePat)"/>
+  </svg>
+</section>
+
+<!-- ================= PILARES ================= -->
+<section class="pillars">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Por qué e-clip</span>
+      <h2 class="section-title">Lo que nos diferencia</h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <h3>Contacto directo</h3>
+        <p>Coordinación estrecha y permanente entre tu equipo y nuestros periodistas, sin intermediarios.</p>
+      </div>
+      <div class="pillar reveal reveal-d1">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <h3>Efectividad y personalización</h3>
+        <p>Cada informe se construye a la medida de los criterios y prioridades de tu organización.</p>
+      </div>
+      <div class="pillar reveal reveal-d2">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <h3>Análisis exhaustivos</h3>
+        <p>Noticias filtradas, ordenadas y jerarquizadas, complementadas con gráficos y análisis.</p>
+      </div>
+      <div class="pillar reveal reveal-d3">
+        <span class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
+        </span>
+        <h3>Integración de servicios</h3>
+        <p>Prensa, redes sociales e informes especiales integrados en una sola solución de información.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NOSOTROS ================= -->
+<section class="about" id="nosotros">
+  <div class="wrap">
+    <div class="about-top">
+      <div class="reveal">
+        <span class="eyebrow">Sobre nosotros</span>
+        <h2 class="section-title">¿Quiénes somos?</h2>
+        <p class="section-lead">
+          Somos una empresa especializada en elaborar informes de prensa diarios en base a
+          los criterios que cada empresa nos entrega. Nuestros informativos son fruto de la
+          coordinación estrecha entre nuestros clientes y nuestros periodistas, entregando
+          una visión global y local de la actualidad a través de micromedios de prensa.
+        </p>
+      </div>
+      <blockquote class="about-quote reveal reveal-d1">
+        “Nuestro símbolo es el camaleón, porque nos adaptamos al entorno de nuestros clientes:
+        asumimos sus colores, colaboramos con ellos y hacemos nuestras sus necesidades informativas.
+        Nuestro trabajo es silencioso — nos camuflamos, pasamos desapercibidos, somos flexibles y adaptables.”
+        <span class="who">Nuestra filosofía</span>
+      </blockquote>
+    </div>
+
+    <div class="about-cards">
+      <div class="about-card reveal">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+          Filosofía
+        </h3>
+        <p>Como el camaleón, cada informe de prensa se elabora tomando en cuenta las necesidades
+        y criterios de la empresa que contrata nuestros servicios: nos adaptamos a su entorno,
+        a sus colores y a sus prioridades.</p>
+      </div>
+      <div class="about-card reveal reveal-d1">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Misión
+        </h3>
+        <p>Una mixtura equilibrada entre el clásico monitoreo de prensa y un informativo
+        personalizado. Monitoreamos medios chilenos y extranjeros de interés para cada cliente:
+        noticias específicas, filtradas, ordenadas y jerarquizadas para una lectura dirigida y efectiva.</p>
+        <p>Nuestra plataforma genera un producto de multiconsulta y, gracias a nuestra base de
+        datos, elaboramos informes que complementan la información que el cliente solicite.</p>
+      </div>
+      <div class="about-card reveal reveal-d2">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Visión
+        </h3>
+        <p>Somos profesionales con visión de futuro, que utilizan masivamente las tecnologías
+        de la información para dar soluciones creativas y proactivas a los requerimientos
+        informativos de nuestros clientes.</p>
+        <p>Frente al enorme volumen de información que se genera a cada segundo, creemos que
+        los informes de prensa deben tener un filtro efectivo, para que cada noticia seleccionada
+        esté al servicio del cliente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ESTADÍSTICAS ================= -->
+<!-- EDITAR: los valores de data-count son placeholders; cambiar por las cifras reales -->
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat reveal">
+      <div class="num"><span data-count="20">0</span><sup>+</sup></div>
+      <div class="label">Años de Experiencia</div>
+    </div>
+    <div class="stat reveal reveal-d1">
+      <div class="num"><span data-count="30">0</span><sup>+</sup></div>
+      <div class="label">Clientes Fidelizados</div>
+    </div>
+    <div class="stat reveal reveal-d2">
+      <div class="num"><span data-count="500">0</span><sup>+</sup></div>
+      <div class="label">Medios Monitoreados</div>
+    </div>
+    <div class="stat reveal reveal-d3">
+      <div class="num"><span data-count="5000">0</span><sup>+</sup></div>
+      <div class="label">Destinatarios Diarios</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICIOS ================= -->
+<section class="services" id="servicios">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Servicios</span>
+      <h2 class="section-title">Soluciones de información para tu empresa</h2>
+      <p class="section-lead">Del monitoreo diario al análisis en profundidad: un ecosistema
+      completo para gestionar la información que importa.</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="service reveal">
+        <div class="service-head">
+          <span class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <h3>Clipping Electrónico</h3>
+        </div>
+        <p>Monitoreo de prensa diario, semanal o mensual. Las noticias más relevantes para
+        el cliente, resumidas en un solo correo.</p>
+        <button class="detail-btn" aria-expanded="false" aria-controls="det1">
+          Detalles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="service-detail" id="det1">
+          <div class="service-detail-inner">
+            <ul>
+              <li><strong>Clipping diario:</strong> selección de noticias publicadas en prensa, online, TV y radios,
+              con imagen corporativa aplicada y criterios de selección, orden y jerarquización según cliente.
+              Feedback y edición de los contenidos. Entrega de lunes a viernes (el lunes incluye las informaciones
+              del fin de semana), 9:00 AM horario tope, en versiones e-mail, online e intranet.</li>
+              <li><strong>Clippings de fin de semana y festivos:</strong> clipping corporativo con notas según
+              coyuntura informativa. Entrega 9:30 AM.</li>
+              <li><strong>Clipping semanal:</strong> clippings corporativos personalizados con la selección de
+              noticias de la semana. Entrega todos los lunes, 7:00 AM.</li>
+              <li><strong>Clippings especiales:</strong> clippings corporativos sobre contingencias, con entrega a convenir.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="service reveal reveal-d1">
+        <div class="service-head">
+          <span class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </span>
+          <h3>Informes de Prensa</h3>
+        </div>
+        <p>Permiten al cliente analizar el flujo de información a partir de nuestra base de
+        datos. Tomamos las noticias, generamos gráficos y análisis según sus necesidades.</p>
+        <button class="detail-btn" aria-expanded="false" aria-controls="det2">
+          Detalles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="service-detail" id="det2">
+          <div class="service-detail-inner">
+            <ul>
+              <li><strong>Catastro general:</strong> notas que nombran al cliente en medios impresos, TV, radios
+              y online; notas de temas relacionados que no nombran a la empresa; y notas donde aparecen
+              personeros del cliente sin referencia a la empresa.</li>
+              <li><strong>Informe de apariciones:</strong> clasificación de notas por tipo de medio, cobertura
+              del medio, área de la noticia (producción, medio ambiente, RSE, laboral) y valoración
+              (positiva, neutra, negativa).</li>
+              <li><strong>Prensa comparada:</strong> análisis de las notas del cliente y de la competencia,
+              con comparación de resultados.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="service reveal">
+        <div class="service-head">
+          <span class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </span>
+          <h3>Monitoreo de Redes Sociales</h3>
+        </div>
+        <p>El monitoreo de redes permite complementar la información de la prensa con aquella
+        que se encuentra en otros soportes.</p>
+        <button class="detail-btn" aria-expanded="false" aria-controls="det3">
+          Detalles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="service-detail" id="det3">
+          <div class="service-detail-inner">
+            <ul>
+              <li><strong>“Jornadas álgidas”:</strong> 2 informes diarios (13:00 y 17:00) que consideran
+              nube de conceptos, mensajes emitidos y acciones sobre ellos.</li>
+              <li><strong>Informe diario, semanal o mensual</strong> según solicitud del cliente: gráficos
+              estadísticos del período a monitorear, nube de conceptos, informe de influyentes y listado de
+              mensajes emitidos; considera lectura de blogs y plataformas abiertas (microblogs).</li>
+              <li><strong>Alertas de emisiones</strong> de acuerdo al número de menciones y al grado de
+              influencia del emisor (cantidad e intensidad).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="service reveal reveal-d1">
+        <div class="service-head">
+          <span class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          </span>
+          <h3>Otros Servicios</h3>
+        </div>
+        <p>Los servicios adicionales ofrecidos posibilitan una mejor gestión de la información
+        dentro de la empresa.</p>
+        <button class="detail-btn" aria-expanded="false" aria-controls="det4">
+          Detalles
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="service-detail" id="det4">
+          <div class="service-detail-inner">
+            <ul>
+              <li><strong>Gestión de medios:</strong> gestión para la publicación de comunicados y/o noticias
+              del cliente en medios nacionales (hasta 7 comunicados al mes), con seguimiento e informe de la
+              gestión. Publicaciones adicionales con costo extra.</li>
+              <li><strong>Traducción inglés/español:</strong> notas del día seleccionadas por el cliente
+              (hasta 4 horas diarias), con envío de documento PDF; opcionalmente se incluyen en el clipping.</li>
+              <li><strong>Alertas informativas:</strong> temas definidos por el cliente, con seguimientos por día
+              y monitoreo permanente en medios impresos, digitales, TV y radios nacionales.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLIENTES ================= -->
+<section class="clients">
+  <div class="wrap reveal">
+    <span class="eyebrow">Confianza</span>
+    <h2 class="section-title">Nuestros clientes</h2>
+    <p class="section-lead">Empresas líderes de la minería, la energía y la industria confían
+    en nuestros informes cada mañana.</p>
+  </div>
+  <!-- Los logos se buscan automáticamente en logos/<slug-del-nombre>.png (o .svg/.jpg/.webp).
+       Ej: "CONSEJO MINERO" -> logos/consejo-minero.png. Si no existe, se muestran iniciales. -->
+  <div class="marquee reveal" aria-label="Listado de clientes">
+    <div class="marquee-track" id="marqueeTrack">
+      <!-- las tarjetas se generan por JS desde la lista CLIENTES y se duplican para el loop -->
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACTO ================= -->
+<section class="contact" id="contacto">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Contacto</span>
+      <h2 class="section-title">Conversemos sobre tus necesidades informativas</h2>
+      <p class="section-lead">Cuéntanos qué necesita tu organización y te responderemos a la brevedad.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info-card reveal">
+        <h3>Contacto directo</h3>
+        <p>Escríbenos o llámanos: te responderá una persona, no un formulario.</p>
+        <div class="contact-row">
+          <span class="ci-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
+          <div>
+            <small>Email</small>
+            <a href="mailto:contacto@e-clip.cl">contacto@e-clip.cl</a>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="ci-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <div>
+            <small>Teléfono</small>
+            <a href="tel:+56981590809">+569 8159 0809</a>
+          </div>
+        </div>
+      </div>
+
+      <form class="form reveal reveal-d1" id="contactForm" novalidate>
+        <div class="form-msg ok" id="msgOk" role="status">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12.5 11 15.5 16 9.5"/></svg>
+          ¡Mensaje enviado! Te contactaremos a la brevedad.
+        </div>
+        <div class="form-msg fail" id="msgFail" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="7" x2="12" y2="13"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/></svg>
+          Revisa los campos marcados e inténtalo de nuevo.
+        </div>
+
+        <div class="form-row">
+          <div class="field" id="f-nombre">
+            <label for="nombre">Nombre completo <i>*</i></label>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" required>
+            <span class="err">Ingresa tu nombre.</span>
+          </div>
+          <div class="field" id="f-empresa">
+            <label for="empresa">Empresa <i>*</i></label>
+            <input type="text" id="empresa" name="empresa" autocomplete="organization" required>
+            <span class="err">Ingresa el nombre de tu empresa.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field" id="f-email">
+            <label for="email">Correo electrónico <i>*</i></label>
+            <input type="email" id="email" name="email" autocomplete="email" required>
+            <span class="err">Ingresa un correo válido.</span>
+          </div>
+          <div class="field" id="f-fono">
+            <label for="fono">Teléfono</label>
+            <div class="phone-group">
+              <select id="codigo" name="codigo" aria-label="Código de país">
+                <option value="+56" selected>🇨🇱 +56</option>
+                <option value="+51">🇵🇪 +51</option>
+                <option value="+54">🇦🇷 +54</option>
+                <option value="+57">🇨🇴 +57</option>
+                <option value="+52">🇲🇽 +52</option>
+                <option value="+55">🇧🇷 +55</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+1">🇺🇸 +1</option>
+              </select>
+              <input type="tel" id="fono" name="fono" autocomplete="tel-national" placeholder="9 1234 5678">
+            </div>
+            <span class="err">Ingresa un teléfono válido.</span>
+          </div>
+        </div>
+        <div class="field" id="f-mensaje">
+          <label for="mensaje">Mensaje <i>*</i></label>
+          <textarea id="mensaje" name="mensaje" required placeholder="Cuéntanos qué tipo de monitoreo o informe necesitas…"></textarea>
+          <span class="err">Escribe tu mensaje.</span>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          Enviar mensaje
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <a class="brand" href="#inicio" aria-label="e-clip, ir al inicio">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#0C2321" stroke-width="2.4"/><circle cx="12" cy="12" r="3" fill="#0C2321"/></svg>
+          <img src="assets/e-clip-icon.png" alt="" onerror="this.remove()">
+        </span>
+        <span class="brand-text">e-clip<small>.cloud</small></span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> e-clip. Todos los derechos reservados.</span>
+      <span>Desarrollado por <a href="#" onclick="return false">Proyecto Órbita</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Navbar: fondo sólido/blur al hacer scroll ---------- */
+  var nav = document.getElementById("navbar");
+  function onScroll(){
+    if(window.scrollY > 30){ nav.classList.add("scrolled"); }
+    else{ nav.classList.remove("scrolled"); }
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- Menú móvil ---------- */
+  var burger = document.getElementById("burger");
+  var menu = document.getElementById("mobileMenu");
+  burger.addEventListener("click", function(){
+    var open = menu.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    nav.classList.toggle("scrolled", open || window.scrollY > 30);
+  });
+  menu.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){
+      menu.classList.remove("open");
+      burger.setAttribute("aria-expanded","false");
+    });
+  });
+
+  /* ---------- Reveal on scroll ---------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    },{threshold:.12, rootMargin:"0px 0px -40px 0px"});
+    revealEls.forEach(function(el){ io.observe(el); });
+  }else{
+    revealEls.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* ---------- Contadores animados ---------- */
+  function animateCount(el){
+    var target = parseInt(el.getAttribute("data-count"),10) || 0;
+    if(reduceMotion){ el.textContent = target.toLocaleString("es-CL"); return; }
+    var dur = 1800, start = null;
+    function step(ts){
+      if(start === null) start = ts;
+      var p = Math.min((ts - start)/dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3); /* ease-out cubic */
+      el.textContent = Math.round(target * eased).toLocaleString("es-CL");
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var counters = document.querySelectorAll("[data-count]");
+  if("IntersectionObserver" in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ animateCount(e.target); cio.unobserve(e.target); }
+      });
+    },{threshold:.5});
+    counters.forEach(function(el){ cio.observe(el); });
+  }else{
+    counters.forEach(animateCount);
+  }
+
+  /* ---------- Acordeones "Detalles" en servicios ---------- */
+  document.querySelectorAll(".detail-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.style.maxHeight = open ? "0" : panel.scrollHeight + "px";
+    });
+  });
+
+  /* ---------- Carrusel de clientes (marquee infinito) ---------- */
+  var CLIENTES = [
+    ["SQM",2004],["BPH",2006],["TRANSELEC",2008],["CONSEJO MINERO",2014],
+    ["SIERRA GORDA SCM",2014],["SM SAAM",2014],["FCAB",2016],["MANTOS COPPER",2017],
+    ["COORDINADOR ELÉCTRICO NACIONAL",2017],["FUNDACIÓN MINERA ESCONDIDA",2018],
+    ["BHP PERÚ",2018],["RIO TINTO",2018],["MOLYMET",2018],
+    ["EMPRESA PORTUARIA DE IQUIQUE",2019],["MINERA GOLD FIELDS",2019],
+    ["TOYOTA CHILE",2020],["MINERA LOMAS BAYAS",2020],
+    ["PARTNER S.A.",2021],["SURVÍAS",2021],["H2 CHILE",2022],["PWC",2022],
+    ["MC INVERSIONES",2023],["ARAUCO",2023],["VOY STGO",2023],
+    ["SUMMIT NANOTEC",2023],["MINERA CANDELARIA",2023],
+    ["CMP",2024],["SQM NITRATOS",2024],["SQM LITIO",2024]
+  ];
+  function initials(name){
+    var words = name.replace(/[.,]/g,"").split(/\s+/).filter(Boolean);
+    if(words.length === 1) return words[0].slice(0,3).toUpperCase();
+    return words.slice(0,3).map(function(w){ return w[0]; }).join("").toUpperCase();
+  }
+  /* "CONSEJO MINERO" -> "consejo-minero" (sin acentos ni símbolos) */
+  function slug(name){
+    return name.normalize("NFD").replace(/[̀-ͯ]/g,"")
+      .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+  }
+  var LOGO_EXTS = ["png","svg","jpg","webp"];
+  var track = document.getElementById("marqueeTrack");
+  function buildCards(){
+    var frag = document.createDocumentFragment();
+    CLIENTES.forEach(function(c){
+      var card = document.createElement("div");
+      card.className = "client";
+      var logo = document.createElement("div");
+      logo.className = "client-logo";
+      /* intenta logos/<slug>.png, .svg, .jpg, .webp; si no hay archivo, iniciales */
+      var img = document.createElement("img");
+      img.alt = "Logo " + c[0];
+      img.loading = "lazy";
+      var tries = 0;
+      img.onerror = function(){
+        tries++;
+        if(tries < LOGO_EXTS.length){
+          img.src = "logos/" + slug(c[0]) + "." + LOGO_EXTS[tries];
+        }else{
+          img.remove();
+          logo.classList.remove("has-img");
+          logo.textContent = initials(c[0]);
+        }
+      };
+      img.onload = function(){ logo.classList.add("has-img"); };
+      img.src = "logos/" + slug(c[0]) + "." + LOGO_EXTS[0];
+      logo.appendChild(img);
+      var name = document.createElement("b");
+      name.textContent = c[0];
+      var since = document.createElement("span");
+      since.textContent = "Desde " + c[1];
+      card.appendChild(logo); card.appendChild(name); card.appendChild(since);
+      frag.appendChild(card);
+    });
+    return frag;
+  }
+  /* dos copias idénticas → translateX(-50%) produce loop perfecto */
+  track.appendChild(buildCards());
+  track.appendChild(buildCards());
+
+  /* ---------- Formulario de contacto (mockup, sin backend) ---------- */
+  var form = document.getElementById("contactForm");
+  var msgOk = document.getElementById("msgOk");
+  var msgFail = document.getElementById("msgFail");
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function setInvalid(id, invalid){
+    document.getElementById(id).classList.toggle("invalid", invalid);
+    return invalid;
+  }
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var bad = false;
+    bad = setInvalid("f-nombre", !form.nombre.value.trim()) || bad;
+    bad = setInvalid("f-empresa", !form.empresa.value.trim()) || bad;
+    bad = setInvalid("f-email", !emailRe.test(form.email.value.trim())) || bad;
+    var fono = form.fono.value.trim();
+    bad = setInvalid("f-fono", fono !== "" && !/^[\d\s()-]{6,15}$/.test(fono)) || bad;
+    bad = setInvalid("f-mensaje", !form.mensaje.value.trim()) || bad;
+
+    msgOk.classList.remove("show");
+    msgFail.classList.remove("show");
+
+    if(bad){
+      msgFail.classList.add("show");
+      return;
+    }
+    /* Mockup: aquí iría el POST al backend real */
+    var btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.style.opacity = ".6";
+    setTimeout(function(){
+      msgOk.classList.add("show");
+      form.reset();
+      btn.disabled = false;
+      btn.style.opacity = "";
+      msgOk.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"});
+    }, 700);
+  });
+
+  /* ---------- Año dinámico en footer ---------- */
+  document.getElementById("year").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
