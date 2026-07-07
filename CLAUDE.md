@@ -58,9 +58,8 @@ que lo pidan explícitamente).
 - El recuadro del logo es **horizontal** (ancho de tarjeta, alto tope 46px) para que
   los wordmarks anchos (Transelec, BPH…) se lean sin deformarse. Los cuadrados quedan
   centrados. No vuelvas al recuadro cuadrado de 56px.
-- **Faltan por subir**: `logos/mantos-copper.png` y `logos/minera-lomas-bayas.png`
-  (hoy muestran iniciales). Muchos logos actuales son favicons de Google 128px, de baja
-  resolución; lo ideal es reemplazarlos por oficiales.
+- **Los 29 clientes ya tienen logo.** Nota: varios son favicons de Google 128px, de
+  baja resolución; lo ideal es reemplazarlos por los oficiales cuando estén disponibles.
 
 ## Placeholders editables
 

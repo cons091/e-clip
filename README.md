@@ -63,17 +63,11 @@ El `slug` = nombre en minúsculas, sin acentos, con guiones (ej: `CONSEJO MINERO
 → `consejo-minero`). El recuadro del logo es horizontal y escala los wordmarks
 anchos sin deformarlos.
 
-### Estado actual (27 de 29 con logo)
+### Estado actual (29 de 29 con logo ✅)
 
-**Faltan 2** — al subirlos con este nombre aparecen automáticamente:
-
-- ⬜ **Mantos Copper** → `logos/mantos-copper.png`
-- ⬜ **Minera Lomas Bayas** → `logos/minera-lomas-bayas.png`
-
-El resto (SQM, BPH, Transelec, Consejo Minero, Sierra Gorda, SM SAAM, FCAB,
-Coordinador Eléctrico, FME, BHP Perú, Rio Tinto, Molymet, EPI, Gold Fields, Partner,
-Survías, H2 Chile, Toyota, PwC, MC Inversiones, Arauco, Voy Stgo, Summit Nanotec,
-Candelaria, CMP, SQM Nitratos, SQM Litio) ya tienen logo.
+Todos los clientes tienen su logo cargado. Si agregas un cliente nuevo al array
+`CLIENTES`, sube su archivo a `logos/<slug>.png` y aparecerá automáticamente; si no
+existe, se mostrarán las iniciales como respaldo.
 
 > ⚠️ Varios logos actuales provienen del servicio público de favicons de Google
 > (128 px) y se ven algo pixelados. Para producción conviene reemplazarlos por los
