@@ -29,16 +29,29 @@ puertos e industria. Símbolo de marca: el **camaleón** (adaptabilidad).
 
 ## Secciones (orden fijo)
 
-Hero → Pilares (4 diferenciadores) → Nosotros (Quiénes somos, Filosofía, Misión,
-Visión) → Estadísticas (contadores animados) → Servicios (4 tarjetas con acordeón
-"Detalles") → Clientes (carrusel infinito) → Contacto (formulario + datos directos).
-**No hay footer** (se eliminó a pedido del cliente — no lo vuelvas a agregar salvo
-que lo pidan explícitamente).
+Hero → **Pilares** (franja pequeña de 4 diferenciadores que divide portada y Nosotros)
+→ Nosotros (Quiénes somos, Filosofía, Misión, Visión) → **Clientes** (carrusel infinito)
+→ Servicios (3 tarjetas principales + "Otros servicios" como tarjeta más pequeña, todas
+con acordeón "Detalles") → Estadísticas (contadores animados) → Contacto (formulario +
+datos directos). **No hay footer** (se eliminó a pedido del cliente — no lo vuelvas a
+agregar salvo que lo pidan explícitamente).
+
+> Este orden refleja el feedback del cliente: Clientes va arriba (tras Nosotros) y las
+> Estadísticas van cerca del final. Pilares es una **franja** compacta, no tarjetas grandes.
 
 ## Convenciones clave
 
 - **Diseño por tokens CSS**: todos los colores/tipografías son variables en `:root`
   (`--teal`, `--lime`, `--petrol`, `--ink`, etc.). Cambia el token, no valores sueltos.
+- **Tipografía**: **Montserrat** (fuente de marca), auto-alojada en
+  `assets/fonts/montserrat-latin.woff2` (variable, un archivo = todos los pesos) vía
+  `@font-face`. Sin CDN → sigue siendo offline-capable. `--sans`/`--display` = Montserrat.
+- **Colores de marca oficiales** (del Manual): amarillo `--brand-yellow` #E3DD22, verde
+  `--brand-green` #97B839, `--sage` #7AB4A1, `--sky` #7EBAE7. Los tintes suaves
+  `--tint-sage`/`--tint-sky` dan fondo diferenciado a cada sección (Clientes=sage,
+  Servicios=sky; Hero/Estadísticas=petrol oscuro). Definidos en claro y oscuro.
+- **Cifras de Estadísticas** (oficiales del brief): 20 años, 25 clientes, 500 medios,
+  8000 destinatarios (`data-count`).
 - **Tema claro y oscuro**: definidos vía `@media (prefers-color-scheme)` y overrides
   `:root[data-theme="light"|"dark"]`. Si tocas colores, actualiza AMBOS temas.
 - **Paleta = marca camaleón**: verde lima `--lime` (#CDD62B, del logo real) + teal

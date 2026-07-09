@@ -18,6 +18,15 @@
    e-clip.cloud — rediseño mockup
    Tokens de diseño (equivalentes a config de Tailwind)
    ============================================================ */
+/* Tipografía de marca: Montserrat (auto-alojada, sin CDN → offline-capable).
+   Fuente variable latina: un solo archivo cubre todos los pesos. */
+@font-face{
+  font-family:"Montserrat";
+  font-style:normal;
+  font-weight:100 900;
+  font-display:swap;
+  src:url("assets/fonts/montserrat-latin.woff2") format("woff2");
+}
 :root{
   --bg:#F5F7F6;
   --surface:#FFFFFF;
@@ -32,6 +41,15 @@
   --lime:#CDD62B;
   --lime-ink:#75800F;
 
+  /* Colores oficiales del Manual de Marca (acentos camaleón) */
+  --brand-yellow:#E3DD22;
+  --brand-green:#97B839;
+  --sage:#7AB4A1;   /* 7ab4a1 */
+  --sky:#7EBAE7;    /* 7ebae7 */
+  /* Tintes suaves para diferenciar el fondo de cada sección */
+  --tint-sage:#E1EFE9;
+  --tint-sky:#E8F2FC;
+
   --petrol:#0C2321;
   --petrol-2:#10302C;
   --on-petrol:#E9F2EE;
@@ -41,8 +59,8 @@
   --shadow-lg:0 2px 4px rgba(12,35,33,.08),0 20px 48px rgba(12,35,33,.14);
   --radius:14px;
 
-  --sans:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
-  --display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --sans:"Montserrat",system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --display:"Montserrat",system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
   --serif:Georgia,"Times New Roman",serif;
 }
 @media (prefers-color-scheme: dark){
@@ -60,6 +78,13 @@
     --lime:#D6DE3F;
     --lime-ink:#DCE27A;
 
+    --brand-yellow:#E3DD22;
+    --brand-green:#A6C94A;
+    --sage:#7AB4A1;
+    --sky:#7EBAE7;
+    --tint-sage:#123029;
+    --tint-sky:#122636;
+
     --petrol:#081512;
     --petrol-2:#0E211E;
 
@@ -71,6 +96,8 @@
   --bg:#F5F7F6; --surface:#FFFFFF; --surface-2:#EDF2EF; --ink:#14231F; --muted:#55685F;
   --line:#DCE5E0; --teal:#0E8C7F; --teal-deep:#0A5C55; --teal-soft:#DDF0ED;
   --lime:#CDD62B; --lime-ink:#75800F; --petrol:#0C2321; --petrol-2:#10302C;
+  --brand-yellow:#E3DD22; --brand-green:#97B839; --sage:#7AB4A1; --sky:#7EBAE7;
+  --tint-sage:#E1EFE9; --tint-sky:#E8F2FC;
   --shadow:0 1px 2px rgba(12,35,33,.06),0 8px 24px rgba(12,35,33,.08);
   --shadow-lg:0 2px 4px rgba(12,35,33,.08),0 20px 48px rgba(12,35,33,.14);
 }
@@ -78,6 +105,8 @@
   --bg:#0B1715; --surface:#122320; --surface-2:#162B27; --ink:#E7F1EC; --muted:#93A8A0;
   --line:#22383380; --teal:#2FB8A6; --teal-deep:#5ED2C2; --teal-soft:#123430;
   --lime:#D6DE3F; --lime-ink:#DCE27A; --petrol:#081512; --petrol-2:#0E211E;
+  --brand-yellow:#E3DD22; --brand-green:#A6C94A; --sage:#7AB4A1; --sky:#7EBAE7;
+  --tint-sage:#123029; --tint-sky:#122636;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
   --shadow-lg:0 2px 4px rgba(0,0,0,.35),0 20px 48px rgba(0,0,0,.5);
 }
@@ -183,6 +212,7 @@ section{scroll-margin-top:84px}
   display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
   gap:56px;align-items:center;
 }
+.hero-logo{width:230px;max-width:62%;height:auto;margin-bottom:26px}
 .hero h1{font-size:clamp(2.3rem,5vw,3.7rem);font-weight:800;letter-spacing:-.025em}
 .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--lime)}
 .hero-sub{color:var(--on-petrol-muted);margin-top:22px;max-width:56ch;font-size:1.08rem}
@@ -240,23 +270,27 @@ section{scroll-margin-top:84px}
 /* patrón de escamas decorativo */
 .scales{position:absolute;inset:auto 0 0 0;height:120px;opacity:.35;pointer-events:none;color:var(--on-petrol)}
 
-/* ============ PILARES ============ */
-.pillars{padding:90px 0 30px}
-.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px}
+/* ====== PILARES · franja pequeña que divide portada y "nosotros" ====== */
+.pillars{position:relative;z-index:3;margin-top:-52px;padding:0 0 6px}
+.pillars-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow-lg);overflow:hidden;
+}
 .pillar{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-  padding:28px 24px;box-shadow:var(--shadow);
-  transition:transform .25s,box-shadow .25s,border-color .25s;
+  display:flex;align-items:center;gap:13px;padding:20px 22px;
+  border-right:1px solid var(--line);transition:background .2s;
 }
-.pillar:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--teal) 40%,var(--line))}
+.pillar:last-child{border-right:0}
+.pillar:hover{background:var(--surface-2)}
 .pillar-icon{
-  width:50px;height:50px;border-radius:13px;display:grid;place-items:center;
+  width:42px;height:42px;border-radius:11px;flex:none;display:grid;place-items:center;
   background:linear-gradient(135deg,var(--teal-soft),color-mix(in srgb,var(--lime) 18%,var(--teal-soft)));
-  color:var(--teal);margin-bottom:18px;
+  color:var(--teal);
 }
-.pillar-icon svg{width:24px;height:24px}
-.pillar h3{font-size:1.06rem;font-weight:700;margin-bottom:8px}
-.pillar p{color:var(--muted);font-size:.92rem}
+.pillar-icon svg{width:21px;height:21px}
+.pillar h3{font-size:.95rem;font-weight:700;margin:0;line-height:1.2}
+.pillar p{color:var(--muted);font-size:.78rem;margin:2px 0 0;line-height:1.3}
 
 /* ============ NOSOTROS ============ */
 .about{padding:90px 0}
@@ -299,14 +333,30 @@ section{scroll-margin-top:84px}
 .stat .label{color:var(--on-petrol-muted);font-weight:600;font-size:.95rem;margin-top:6px}
 
 /* ============ SERVICIOS ============ */
-.services{padding:90px 0}
-.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:44px}
+.services{padding:90px 0;background:var(--tint-sky)}
+/* 3 servicios principales + "Otros servicios" como tarjeta más pequeña (info repartida) */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
 .service{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
   padding:32px 30px;box-shadow:var(--shadow);display:flex;flex-direction:column;
   transition:transform .25s,box-shadow .25s;
 }
 .service:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+
+/* "Otros servicios": franja más pequeña y horizontal bajo los 3 principales */
+.service-extra{
+  margin-top:24px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 28px;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;
+  transition:transform .25s,box-shadow .25s;
+}
+.service-extra:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.service-extra .service-icon{width:46px;height:46px;border-radius:12px}
+.service-extra .service-icon svg{width:22px;height:22px}
+.service-extra .se-body h3{font-size:1.05rem;font-weight:750;margin-bottom:3px}
+.service-extra .se-body p{color:var(--muted);font-size:.9rem}
+.service-extra .detail-btn{margin-top:0;align-self:center;white-space:nowrap}
+.service-extra .service-detail{grid-column:1 / -1}
 .service-head{display:flex;align-items:center;gap:16px;margin-bottom:14px}
 .service-icon{
   width:52px;height:52px;border-radius:14px;flex:none;display:grid;place-items:center;
@@ -334,7 +384,8 @@ section{scroll-margin-top:84px}
 .service-detail-inner li{margin:4px 0}
 
 /* ============ CLIENTES ============ */
-.clients{padding:90px 0;background:var(--surface-2)}
+/* Fondo de marca (7ab4a1 suavizado) en vez del gris poco atractivo del brief */
+.clients{padding:90px 0;background:var(--tint-sage)}
 .marquee{
   overflow:hidden;margin-top:44px;position:relative;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
@@ -438,7 +489,10 @@ section{scroll-margin-top:84px}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:1020px){
-  .pillars-grid{grid-template-columns:repeat(2,1fr)}
+  .pillars-strip{grid-template-columns:repeat(2,1fr)}
+  .pillar:nth-child(2){border-right:0}
+  .pillar:nth-child(1),.pillar:nth-child(2){border-bottom:1px solid var(--line)}
+  .services-grid{grid-template-columns:1fr}
   .about-cards{grid-template-columns:1fr;max-width:640px}
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:40px 20px}
 }
@@ -456,7 +510,12 @@ section{scroll-margin-top:84px}
 }
 @media (max-width:600px){
   body{font-size:16px}
-  .pillars-grid,.services-grid{grid-template-columns:1fr}
+  .pillars{margin-top:-34px}
+  .pillars-strip{grid-template-columns:1fr}
+  .pillar{border-right:0;border-bottom:1px solid var(--line)}
+  .pillar:last-child{border-bottom:0}
+  .services-grid{grid-template-columns:1fr}
+  .service-extra{grid-template-columns:1fr;text-align:center;justify-items:center;gap:14px}
   .form-row{grid-template-columns:1fr}
   .form,.contact-info-card{padding:28px 22px}
   .stats-grid{grid-template-columns:1fr 1fr}
@@ -499,6 +558,7 @@ section{scroll-margin-top:84px}
 <section class="hero" id="inicio">
   <div class="wrap hero-grid">
     <div>
+      <img class="hero-logo" src="assets/e-clip-blanco.png" alt="e-clip" width="230" height="115">
       <h1>Una nueva <em>Visión</em> en captura y análisis de prensa</h1>
       <p class="hero-sub">
         Monitoreo y análisis de prensa acorde a tus necesidades.
@@ -556,41 +616,45 @@ section{scroll-margin-top:84px}
   </svg>
 </section>
 
-<!-- ================= PILARES ================= -->
-<section class="pillars">
+<!-- ============ PILARES · franja de diferenciadores ============ -->
+<section class="pillars" aria-label="Lo que nos diferencia">
   <div class="wrap">
-    <div class="reveal">
-      <span class="eyebrow">Por qué e-clip</span>
-      <h2 class="section-title">Lo que nos diferencia</h2>
-    </div>
-    <div class="pillars-grid">
-      <div class="pillar reveal">
-        <span class="pillar-icon">
+    <div class="pillars-strip reveal">
+      <div class="pillar">
+        <span class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </span>
-        <h3>Contacto directo</h3>
-        <p>Coordinación estrecha y permanente entre tu equipo y nuestros periodistas, sin intermediarios.</p>
+        <div>
+          <h3>Contacto directo</h3>
+          <p>Sin intermediarios</p>
+        </div>
       </div>
-      <div class="pillar reveal reveal-d1">
-        <span class="pillar-icon">
+      <div class="pillar">
+        <span class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
         </span>
-        <h3>Efectividad y personalización</h3>
-        <p>Cada informe se construye a la medida de los criterios y prioridades de tu organización.</p>
+        <div>
+          <h3>Personalización</h3>
+          <p>Informes a tu medida</p>
+        </div>
       </div>
-      <div class="pillar reveal reveal-d2">
-        <span class="pillar-icon">
+      <div class="pillar">
+        <span class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         </span>
-        <h3>Análisis exhaustivos</h3>
-        <p>Noticias filtradas, ordenadas y jerarquizadas, complementadas con gráficos y análisis.</p>
+        <div>
+          <h3>Análisis exhaustivo</h3>
+          <p>Filtrado y jerarquizado</p>
+        </div>
       </div>
-      <div class="pillar reveal reveal-d3">
-        <span class="pillar-icon">
+      <div class="pillar">
+        <span class="pillar-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
         </span>
-        <h3>Integración de servicios</h3>
-        <p>Prensa, redes sociales e informes especiales integrados en una sola solución de información.</p>
+        <div>
+          <h3>Integración</h3>
+          <p>Todo en una solución</p>
+        </div>
       </div>
     </div>
   </div>
@@ -655,25 +719,19 @@ section{scroll-margin-top:84px}
   </div>
 </section>
 
-<!-- ================= ESTADÍSTICAS ================= -->
-<!-- EDITAR: los valores de data-count son placeholders; cambiar por las cifras reales -->
-<section class="stats">
-  <div class="wrap stats-grid">
-    <div class="stat reveal">
-      <div class="num"><span data-count="20">0</span><sup>+</sup></div>
-      <div class="label">Años de Experiencia</div>
-    </div>
-    <div class="stat reveal reveal-d1">
-      <div class="num"><span data-count="30">0</span><sup>+</sup></div>
-      <div class="label">Clientes Fidelizados</div>
-    </div>
-    <div class="stat reveal reveal-d2">
-      <div class="num"><span data-count="500">0</span><sup>+</sup></div>
-      <div class="label">Medios Monitoreados</div>
-    </div>
-    <div class="stat reveal reveal-d3">
-      <div class="num"><span data-count="5000">0</span><sup>+</sup></div>
-      <div class="label">Destinatarios Diarios</div>
+<!-- ================= CLIENTES ================= -->
+<section class="clients">
+  <div class="wrap reveal">
+    <span class="eyebrow">Confianza</span>
+    <h2 class="section-title">Nuestros clientes</h2>
+    <p class="section-lead">Empresas líderes de la minería, la energía y la industria confían
+    en nuestros informes cada mañana.</p>
+  </div>
+  <!-- Los logos se buscan automáticamente en logos/<slug-del-nombre>.png (o .svg/.jpg/.webp).
+       Ej: "CONSEJO MINERO" -> logos/consejo-minero.png. Si no existe, se muestran iniciales. -->
+  <div class="marquee reveal" aria-label="Listado de clientes">
+    <div class="marquee-track" id="marqueeTrack">
+      <!-- las tarjetas se generan por JS desde la lista CLIENTES y se duplican para el loop -->
     </div>
   </div>
 </section>
@@ -776,51 +834,57 @@ section{scroll-margin-top:84px}
         </div>
       </div>
 
-      <div class="service reveal reveal-d1">
-        <div class="service-head">
-          <span class="service-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-          </span>
-          <h3>Otros Servicios</h3>
-        </div>
-        <p>Los servicios adicionales ofrecidos posibilitan una mejor gestión de la información
-        dentro de la empresa.</p>
-        <button class="detail-btn" aria-expanded="false" aria-controls="det4">
-          Detalles
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="service-detail" id="det4">
-          <div class="service-detail-inner">
-            <ul>
-              <li><strong>Gestión de medios:</strong> gestión para la publicación de comunicados y/o noticias
-              del cliente en medios nacionales (hasta 7 comunicados al mes), con seguimiento e informe de la
-              gestión. Publicaciones adicionales con costo extra.</li>
-              <li><strong>Traducción inglés/español:</strong> notas del día seleccionadas por el cliente
-              (hasta 4 horas diarias), con envío de documento PDF; opcionalmente se incluyen en el clipping.</li>
-              <li><strong>Alertas informativas:</strong> temas definidos por el cliente, con seguimientos por día
-              y monitoreo permanente en medios impresos, digitales, TV y radios nacionales.</li>
-            </ul>
-          </div>
+    </div>
+
+    <!-- "Otros servicios": tarjeta más pequeña, no del mismo tamaño que el resto -->
+    <div class="service-extra reveal">
+      <span class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      </span>
+      <div class="se-body">
+        <h3>Otros Servicios</h3>
+        <p>Servicios adicionales que posibilitan una mejor gestión de la información dentro de la empresa.</p>
+      </div>
+      <button class="detail-btn" aria-expanded="false" aria-controls="det4">
+        Detalles
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="service-detail" id="det4">
+        <div class="service-detail-inner">
+          <ul>
+            <li><strong>Gestión de medios:</strong> gestión para la publicación de comunicados y/o noticias
+            del cliente en medios nacionales (hasta 7 comunicados al mes), con seguimiento e informe de la
+            gestión. Publicaciones adicionales con costo extra.</li>
+            <li><strong>Traducción inglés/español:</strong> notas del día seleccionadas por el cliente
+            (hasta 4 horas diarias), con envío de documento PDF; opcionalmente se incluyen en el clipping.</li>
+            <li><strong>Alertas informativas:</strong> temas definidos por el cliente, con seguimientos por día
+            y monitoreo permanente en medios impresos, digitales, TV y radios nacionales.</li>
+          </ul>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ================= CLIENTES ================= -->
-<section class="clients">
-  <div class="wrap reveal">
-    <span class="eyebrow">Confianza</span>
-    <h2 class="section-title">Nuestros clientes</h2>
-    <p class="section-lead">Empresas líderes de la minería, la energía y la industria confían
-    en nuestros informes cada mañana.</p>
-  </div>
-  <!-- Los logos se buscan automáticamente en logos/<slug-del-nombre>.png (o .svg/.jpg/.webp).
-       Ej: "CONSEJO MINERO" -> logos/consejo-minero.png. Si no existe, se muestran iniciales. -->
-  <div class="marquee reveal" aria-label="Listado de clientes">
-    <div class="marquee-track" id="marqueeTrack">
-      <!-- las tarjetas se generan por JS desde la lista CLIENTES y se duplican para el loop -->
+<!-- ================= ESTADÍSTICAS ================= -->
+<!-- Cifras oficiales del brief: 20 años, 25 clientes, 500 medios, 8000 destinatarios -->
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat reveal">
+      <div class="num"><span data-count="20">0</span><sup>+</sup></div>
+      <div class="label">Años de Experiencia</div>
+    </div>
+    <div class="stat reveal reveal-d1">
+      <div class="num"><span data-count="25">0</span><sup>+</sup></div>
+      <div class="label">Clientes Fidelizados</div>
+    </div>
+    <div class="stat reveal reveal-d2">
+      <div class="num"><span data-count="500">0</span><sup>+</sup></div>
+      <div class="label">Medios Monitoreados</div>
+    </div>
+    <div class="stat reveal reveal-d3">
+      <div class="num"><span data-count="8000">0</span><sup>+</sup></div>
+      <div class="label">Destinatarios Diarios</div>
     </div>
   </div>
 </section>
